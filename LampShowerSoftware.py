@@ -62,7 +62,7 @@ try:
         if(i >= 100):
             i = 0
         level = i
-        client.publish(topicBase+"/port/"+lamp+"/pdo/wr", "{\"port\": "+lamp",\"valid\": 1,\"raw\":[17, 2, 0, 2, 0, 0, "+str(sigmoid(d))+", 0]}", 0)
+        client.publish(topicBase+"/port/"+lamp+"/pdo/wr", "{\"port\": "+lamp+",\"valid\": 1,\"raw\":[17, 2, 0, 2, 0, 0, "+str(sigmoid(d))+", 0]}", 0)
 
 except Exception as e:
     print("You've pressed ^C; disconnectiong")
