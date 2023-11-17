@@ -7,11 +7,18 @@ d = 0
 print("LampShowerSoftware v1.0")
 ip = input("Please enter the broker's IP address:\n")
 topicBase = input("Please enter topic base name:\n")
+lamp = input("Please enter the port that the lamp is connected to (1-8):\n")
+while not lamp in "12345678":
+    lamp = input("Please input an integer between 1 and 8")
+sensor = input("Please enter the port that the sensor is connected to (1-8):\n")
+while not sensor in "12345678":
+    sensor = input("Please input an integer between 1 and 8")
+
 
 def onmsg(client, userdata, msg):
     #print(msg.topic + ": " + msg.payload.decode())
     global d
-    if(msg.topic == topicBase+"/port/5/pdi"):
+    if(msg.topic == topicBase+"/port/"+sensor+"/pdi"):
         payload_json = json.loads(msg.payload.decode())
         process_meter = payload_json['P_Process_Meter']
         dist = process_meter['Measurement_value__Distance']
@@ -21,7 +28,7 @@ def onmsg(client, userdata, msg):
 
 def onconnect(client, userdata, flags, rc):
     print("Connected with result code "+str(rc))
-    client.subscribe(topicBase+"/port/5/pdi")
+    client.subscribe(topicBase+"/port/"+sensor+"/pdi")
     client.subscribe("test")
 
 client = paho.Client()
@@ -35,7 +42,7 @@ if client.connect(ip, 1883, 60) != 0:
 #client.subscribe("MqttTopicBase/port/5/pdi")
 #client.subscribe("test")
 
-client.publish(topicBase+"/port/1/pdo/wr", "Controlling with Python")
+client.publish(topicBase+"/port/"+lamp+"/pdo/wr", "Controlling with Python")
 client.publish("test", "Controlling with Python")
 
 def sigmoid(x):
@@ -55,7 +62,7 @@ try:
         if(i >= 100):
             i = 0
         level = i
-        client.publish(topicBase+"/port/1/pdo/wr", "{\"port\": 1,\"valid\": 1,\"raw\":[17, 2, 0, 2, 0, 0, "+str(sigmoid(d))+", 0]}", 0)
+        client.publish(topicBase+"/port/"+lamp"/pdo/wr", "{\"port\": "+lamp",\"valid\": 1,\"raw\":[17, 2, 0, 2, 0, 0, "+str(sigmoid(d))+", 0]}", 0)
 
 except Exception as e:
     print("You've pressed ^C; disconnectiong")
